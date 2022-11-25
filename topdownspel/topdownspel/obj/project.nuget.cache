@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Pnx5Pei/YQlXxEw/OyW1ylvN/YNYUPeqrAG3b/SQdVL8gDbjf5ST1/SYPHiJb14s6Tw3w3TGGjopGK0anXBohg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\emil.ulinjohansson\\pragermerin\\TOPDOWNSPEL\\topdownspel\\topdownspel\\topdownspel.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\emil.ulinjohansson\\.nuget\\packages\\raylib-cs\\4.2.0.1\\raylib-cs.4.2.0.1.nupkg.sha512",
+    "C:\\Users\\emil.ulinjohansson\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}
