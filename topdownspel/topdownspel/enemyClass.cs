@@ -14,10 +14,14 @@ public class TextureClass
     public List<Texture2D> charTextures = new();
     public TextureClass(){
         charTextures.Add(Raylib.LoadTexture("gubbe.png"));
-        charTextures.Add(Raylib.LoadTexture("enemy.png"));
         backgroundTextures.Add(Raylib.LoadTexture("bakgrundstart.png"));
         backgroundTextures.Add(Raylib.LoadTexture("upgradebakgrund.png"));
         backgroundTextures.Add(Raylib.LoadTexture("mainbackground.png"));
         otherTextures.Add(Raylib.LoadTexture("exitsign.png"));
     }
+}
+
+public class RunningClass
+{
+   
 }

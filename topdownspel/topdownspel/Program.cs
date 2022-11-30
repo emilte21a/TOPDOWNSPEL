@@ -14,11 +14,15 @@ enemies[0].enemyRec.y = 500;
 
 TextureClass t = new(); 
 
+RunningClass r = new();
+
 int round = 1;
 
 float speed = 4.5f;
 
 int dmgTimer = 60;
+
+int extragold = 1;
 
 Random rnd = new Random();
 int exitPosX = rnd.Next(512,1025);
@@ -30,13 +34,17 @@ enemyClass enemyRec = new enemyClass();
 
 Rectangle finish = new Rectangle(exitPosX, exitPosY, t.otherTextures[0].width, t.otherTextures[0].height);
 
-Rectangle upgrade1 = new Rectangle(924, 0, 100, 100); //Rektangel för upgradering
+Rectangle upgrade1 = new Rectangle(924, 0, 100, 100); //Rektangel för extra speed
 
-Rectangle upgrade2 = new Rectangle(924, 150, 100, 100);
+Rectangle upgrade2 = new Rectangle(924, 150, 100, 100); //Rektangel för full hp
 
-Rectangle nextround = new Rectangle(700, 500, 300, 100); //Rektangel för nästa runda
+Rectangle upgrade3 = new Rectangle(924, 300, 100, 100); //Rektangel för extra guld per sekund
+
+Rectangle nextround = new Rectangle(924, 924, 300, 100); //Rektangel för nästa runda
 
 Vector2 position = new Vector2(40, 300);
+
+
 
 //Kamera följer spelarens position
 Camera2D camera;
@@ -48,23 +56,18 @@ int gold = 0;
 
 int hp = 100;
 
-int i = 0;
-
-
-
 void HandleTimer() //Timerfunktion: ökar guld med 2 varje sekund
 {
-	gold = gold+2;
+	gold = gold+extragold; //Guld ökar med extragold per sekund
 }
 System.Timers.Timer timer = new (interval: 1000); //Timer med intervallet 1 sekund
 timer.Elapsed += ( sender, e ) => HandleTimer();
-
-
 
 Color myColor = new Color(0, 200, 30, 225);
 
 string currentScene = "start"; //start, game, gameover
 
+//Fiende egenskaper
 Vector2 enemyMovement = new Vector2(1, 0);
 float enemySpeed = 2;
 
@@ -187,11 +190,20 @@ while (Raylib.WindowShouldClose() == false)
             }
         }
 
-        if (Raylib.CheckCollisionRecs(characterRec, upgrade2) && gold >= 50 && hp<100)
+        if (Raylib.CheckCollisionRecs(characterRec, upgrade2) && gold >= 25 && hp<100)
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
             {
             hp = 100;
+            gold = gold - 25;
+            }
+        }
+
+        if (Raylib.CheckCollisionRecs(characterRec, upgrade3) && gold >= 50)
+        {
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
+            {
+            extragold++;
             gold = gold - 50;
             }
         }
@@ -238,7 +250,7 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawTexture(t.backgroundTextures[2], 0, 0, Color.WHITE); //Spelbakgrund
         
 
-        Raylib.DrawTexture(t.charTextures[1], (int)enemyRec.enemyRec.x, (int)enemyRec.enemyRec.y, Color.WHITE); //Fiende texturen
+        Raylib.DrawTexture(enemyRec.enemyTexture, (int)enemyRec.enemyRec.x, (int)enemyRec.enemyRec.y, Color.WHITE); //Fiende texturen
 
         Raylib.DrawTexture(t.charTextures[0], //Karaktär texturen
         (int)characterRec.x,
@@ -266,16 +278,20 @@ while (Raylib.WindowShouldClose() == false)
     else if (currentScene == "upgrade")
     {
         Raylib.DrawTexture(t.backgroundTextures[1], 0, 0, Color.WHITE );
-        Raylib.DrawRectangle(924, 0, 100, 100, Color.GOLD);
+
+        Raylib.DrawRectangle(924, 0, 100, 100, Color.GOLD); 
         Raylib.DrawRectangle(924, 150, 100, 100, Color.GOLD);
+        Raylib.DrawRectangle(924, 300, 100, 100, Color.GOLD);
         Raylib.DrawRectangle(924, 924, 100, 100, Color.LIME);
         Raylib.DrawTexture(t.charTextures[0], (int)characterRec.x, (int)characterRec.y, Color.WHITE);
-        Raylib.DrawText("Play next round", 875, 924, 20, Color.WHITE);
-        Raylib.DrawText("Increase speed with 0.2 (50 gold) Press SPACE to buy", 424, 100, 20, Color.WHITE);
-        Raylib.DrawText("Get full health (50 gold) Press SPACE to buy", 424, 150, 20, Color.WHITE);
-        Raylib.DrawText($"Gold:{gold}", 25, 40, 30, Color.WHITE);
-        Raylib.DrawText($"Speed:{speed}", 25, 80, 30, Color.WHITE);
-        Raylib.DrawText($"Health:{hp}", 25, 120, 30, Color.WHITE);
+        Raylib.DrawText("Play next round", 600, 924, 20, Color.WHITE);
+        Raylib.DrawText("Speed+0.2 (50 gold) Press SPACE to buy", 424, 50, 20, Color.WHITE);
+        Raylib.DrawText("Full health (25 gold) Press SPACE to buy", 424, 200, 20, Color.WHITE);
+        Raylib.DrawText("+1 gold/sec (50 gold) Press SPACE to buy", 424, 350, 20, Color.WHITE);
+        Raylib.DrawText($"Gold: {gold}", 25, 40, 30, Color.WHITE);
+        Raylib.DrawText($"Gold/Sec: {extragold}", 25, 80, 30, Color.WHITE);
+        Raylib.DrawText($"Speed: {speed}", 25, 120, 30, Color.WHITE);
+        Raylib.DrawText($"Health: {hp}", 25, 160, 30, Color.WHITE);
     }   
 
     else if (currentScene == "start")
