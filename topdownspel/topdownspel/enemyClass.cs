@@ -23,5 +23,7 @@ public class TextureClass
 
 public class RunningClass
 {
+    
+   public Texture2D runningTexture = Raylib.LoadTexture("spring.png");
    
 }

@@ -25,8 +25,8 @@ int dmgTimer = 60;
 int extragold = 1;
 
 Random rnd = new Random();
-int exitPosX = rnd.Next(512,1025);
-int exitPosY = rnd.Next(512,1025);
+int exitPosX = rnd.Next(512,944);
+int exitPosY = rnd.Next(512,944);
 
 Rectangle characterRec = new Rectangle(0, 60, t.charTextures[0].width, t.charTextures[0].height);
 
@@ -47,7 +47,7 @@ Vector2 position = new Vector2(40, 300);
 
 
 //Kamera följer spelarens position
-Camera2D camera;
+Camera2D camera = new();
 camera.zoom = 1;
 camera.rotation = 0;
 camera.offset = new Vector2(screenWidth / 2, screenHeight / 2);
@@ -62,6 +62,10 @@ void HandleTimer() //Timerfunktion: ökar guld med 2 varje sekund
 }
 System.Timers.Timer timer = new (interval: 1000); //Timer med intervallet 1 sekund
 timer.Elapsed += ( sender, e ) => HandleTimer();
+
+float timer1 = 0.0f;
+int frame = 0;
+int maxFrames = (8);
 
 Color myColor = new Color(0, 200, 30, 225);
 
@@ -252,10 +256,38 @@ while (Raylib.WindowShouldClose() == false)
 
         Raylib.DrawTexture(enemyRec.enemyTexture, (int)enemyRec.enemyRec.x, (int)enemyRec.enemyRec.y, Color.WHITE); //Fiende texturen
 
+        
+
+        Rectangle sourceRec = new Rectangle(80*frame, 0, 80, 80);
+        Rectangle sourceRec1 = new Rectangle(80*frame, 0, -80, 80);
+
+        timer1 += 0.06f;
+        
+        if (timer1 > 0.5f)
+        {
+            timer1 = 0.0f;
+            frame +=1;
+        }
+        frame = frame % maxFrames;
+        Console.WriteLine(frame);
+
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
+        {
+            Raylib.DrawTextureRec(r.runningTexture, sourceRec, characterPos, Color.WHITE);
+        }
+        
+        else if (Raylib.IsKeyDown(KeyboardKey.KEY_A))
+        {
+            Raylib.DrawTextureRec(r.runningTexture, sourceRec1, characterPos, Color.WHITE);
+        }
+
+        else
+        {
         Raylib.DrawTexture(t.charTextures[0], //Karaktär texturen
         (int)characterRec.x,
         (int)characterRec.y,
         Color.WHITE);
+        }
 
          if (Raylib.CheckCollisionRecs(characterRec, enemyRec.enemyRec) && dmgTimer == 1) 
         {   
