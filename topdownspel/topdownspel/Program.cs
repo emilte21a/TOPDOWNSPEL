@@ -7,10 +7,14 @@ const int screenHeight = 1024;
 Raylib.InitWindow(screenWidth, screenHeight, "Topdown game");
 Raylib.SetTargetFPS(60);
 
+int enemiesOnScreen = 1;
+
 List<enemyClass> enemies = new List<enemyClass>();
 enemies.Add(new enemyClass());
 
-enemies[0].enemyRec.y = 500;
+
+enemies[0].enemyRec.x = 1024;
+
 
 TextureClass t = new(); 
 
@@ -34,15 +38,17 @@ enemyClass enemyRec = new enemyClass();
 
 Rectangle finish = new Rectangle(exitPosX, exitPosY, t.otherTextures[0].width, t.otherTextures[0].height);
 
-Rectangle upgrade1 = new Rectangle(924, 0, 100, 100); //Rektangel för extra speed
+Rectangle upgrade1 = new Rectangle(150, 700, 100, 100); //Rektangel för extra speed
 
-Rectangle upgrade2 = new Rectangle(924, 150, 100, 100); //Rektangel för full hp
+Rectangle upgrade2 = new Rectangle(300, 700, 100, 100); //Rektangel för full hp
 
-Rectangle upgrade3 = new Rectangle(924, 300, 100, 100); //Rektangel för extra guld per sekund
+Rectangle upgrade3 = new Rectangle(450, 700, 100, 100); //Rektangel för extra guld per sekund
 
-Rectangle nextround = new Rectangle(924, 924, 300, 100); //Rektangel för nästa runda
+Rectangle nextround = new Rectangle(600, 700, 300, 100); //Rektangel för nästa runda
 
 Vector2 position = new Vector2(40, 300);
+
+
 
 
 
@@ -66,6 +72,20 @@ timer.Elapsed += ( sender, e ) => HandleTimer();
 float timer1 = 0.0f;
 int frame = 0;
 int maxFrames = (8);
+
+void runningLogic()
+{
+    timer1 += 0.06f;
+        
+    if (timer1 > 0.4f)
+    {
+    timer1 = 0.0f;
+    frame +=1;
+        }
+    frame = frame % maxFrames;
+
+}
+
 
 Color myColor = new Color(0, 200, 30, 225);
 
@@ -106,6 +126,28 @@ static float walkingY(float charactery, float speed)
     return charactery;
 }
 
+static float skipX(float characterx)
+{
+    if (Raylib.IsKeyPressed(KeyboardKey.KEY_D))
+    {
+        characterx += 150;
+        if (characterx > 600 )
+    {
+        characterx = 150;
+    }
+    }
+    if (Raylib.IsKeyPressed(KeyboardKey.KEY_A))
+    {
+        characterx -= 150;
+
+        if (characterx < 150)
+    {
+        characterx = 600;
+    }
+    }
+    return characterx;
+}
+
 while (Raylib.WindowShouldClose() == false)
 {
 
@@ -127,17 +169,20 @@ while (Raylib.WindowShouldClose() == false)
 
 
         Vector2 playerPos = new Vector2(characterRec.x, characterRec.y);
+
+
+        
         Vector2 fiendePos = new Vector2(enemyRec.enemyRec.x, enemyRec.enemyRec.y);
         Vector2 diff = playerPos - fiendePos;
-
         Vector2 fiendeDirection = Vector2.Normalize(diff);
-
         enemyMovement = fiendeDirection * enemySpeed;
-
         enemyRec.enemyRec.x += enemyMovement.X;
         enemyRec.enemyRec.y += enemyMovement.Y;
+            
+        
 
-       
+
+        
 
         if (Raylib.CheckCollisionRecs(characterRec, enemyRec.enemyRec) && dmgTimer == 1) //Gameover-scen när fienden och karaktären krockar
         {   
@@ -161,8 +206,9 @@ while (Raylib.WindowShouldClose() == false)
             gold = gold - 10*round;
             timer.Stop();
             round++;
+
             enemySpeed += 0.2f;
-            characterRec.x = 0;
+            characterRec.x = 150;
             characterRec.y = 0;
             finish.x = rnd.Next(512, 1000);
             finish.y = rnd.Next(512, 1000);
@@ -182,8 +228,8 @@ while (Raylib.WindowShouldClose() == false)
 
     else if (currentScene == "upgrade")
     {   
-        characterRec.x = walkingX(characterRec.x, speed);
-        characterRec.y = walkingY(characterRec.y, speed);
+        characterRec.y = 700;
+        characterRec.x = skipX(characterRec.x);
 
         if (Raylib.CheckCollisionRecs(characterRec, upgrade1) && gold >= 50)
         {
@@ -214,11 +260,14 @@ while (Raylib.WindowShouldClose() == false)
 
         if (Raylib.CheckCollisionRecs(characterRec, nextround))
         {
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
+            {
             currentScene = "game";
             characterRec.x = 0;
             characterRec.y = 0;
             enemyRec.enemyRec.x = 1024;
             enemyRec.enemyRec.y = 1024;
+            }
         }
     }
 
@@ -253,23 +302,17 @@ while (Raylib.WindowShouldClose() == false)
 
         Raylib.DrawTexture(t.backgroundTextures[2], 0, 0, Color.WHITE); //Spelbakgrund
         
-
+        
+            
         Raylib.DrawTexture(enemyRec.enemyTexture, (int)enemyRec.enemyRec.x, (int)enemyRec.enemyRec.y, Color.WHITE); //Fiende texturen
+        
 
         
+        runningLogic();
 
         Rectangle sourceRec = new Rectangle(80*frame, 0, 80, 80);
         Rectangle sourceRec1 = new Rectangle(80*frame, 0, -80, 80);
 
-        timer1 += 0.06f;
-        
-        if (timer1 > 0.5f)
-        {
-            timer1 = 0.0f;
-            frame +=1;
-        }
-        frame = frame % maxFrames;
-        Console.WriteLine(frame);
 
         if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
         {
@@ -281,6 +324,19 @@ while (Raylib.WindowShouldClose() == false)
             Raylib.DrawTextureRec(r.runningTexture, sourceRec1, characterPos, Color.WHITE);
         }
 
+        else if (Raylib.IsKeyDown(KeyboardKey.KEY_W))
+        {
+            Raylib.DrawTextureRec(r.runningTexture2, sourceRec, characterPos, Color.WHITE);
+
+        }
+
+        else if (Raylib.IsKeyDown(KeyboardKey.KEY_S))
+        {
+            Raylib.DrawTextureRec(r.runningTexture3, sourceRec, characterPos, Color.WHITE);
+        }
+
+        
+
         else
         {
         Raylib.DrawTexture(t.charTextures[0], //Karaktär texturen
@@ -288,6 +344,7 @@ while (Raylib.WindowShouldClose() == false)
         (int)characterRec.y,
         Color.WHITE);
         }
+
 
          if (Raylib.CheckCollisionRecs(characterRec, enemyRec.enemyRec) && dmgTimer == 1) 
         {   
@@ -311,15 +368,23 @@ while (Raylib.WindowShouldClose() == false)
     {
         Raylib.DrawTexture(t.backgroundTextures[1], 0, 0, Color.WHITE );
 
-        Raylib.DrawRectangle(924, 0, 100, 100, Color.GOLD); 
-        Raylib.DrawRectangle(924, 150, 100, 100, Color.GOLD);
-        Raylib.DrawRectangle(924, 300, 100, 100, Color.GOLD);
-        Raylib.DrawRectangle(924, 924, 100, 100, Color.LIME);
-        Raylib.DrawTexture(t.charTextures[0], (int)characterRec.x, (int)characterRec.y, Color.WHITE);
-        Raylib.DrawText("Play next round", 600, 924, 20, Color.WHITE);
-        Raylib.DrawText("Speed+0.2 (50 gold) Press SPACE to buy", 424, 50, 20, Color.WHITE);
-        Raylib.DrawText("Full health (25 gold) Press SPACE to buy", 424, 200, 20, Color.WHITE);
-        Raylib.DrawText("+1 gold/sec (50 gold) Press SPACE to buy", 424, 350, 20, Color.WHITE);
+        Raylib.DrawRectangle(150, 700, 100, 100, Color.GOLD); 
+        Raylib.DrawText("1", 200, 750, 20, Color.WHITE);
+
+        Raylib.DrawRectangle(300, 700, 100, 100, Color.GOLD);
+        Raylib.DrawText("2", 350, 750, 20, Color.WHITE);
+
+        Raylib.DrawRectangle(450, 700, 100, 100, Color.GOLD);
+        Raylib.DrawText("3", 500, 750, 20, Color.WHITE);
+
+        Raylib.DrawRectangle(600, 700, 100, 100, Color.LIME);
+        Raylib.DrawText("4", 650, 750, 20, Color.WHITE);
+
+        Raylib.DrawTexture(t.otherTextures[1], (int)characterRec.x, (int)characterRec.y, Color.WHITE);
+        Raylib.DrawText("1. Speed+0.2 (50 gold) Press SPACE to buy", 424, 150, 20, Color.WHITE);
+        Raylib.DrawText("2. Full health (25 gold) Press SPACE to buy", 424, 300, 20, Color.WHITE);
+        Raylib.DrawText("3. +1 gold/sec (50 gold) Press SPACE to buy", 424, 450, 20, Color.WHITE);
+        Raylib.DrawText("4. Play next round", 424, 600, 20, Color.WHITE);
         Raylib.DrawText($"Gold: {gold}", 25, 40, 30, Color.WHITE);
         Raylib.DrawText($"Gold/Sec: {extragold}", 25, 80, 30, Color.WHITE);
         Raylib.DrawText($"Speed: {speed}", 25, 120, 30, Color.WHITE);

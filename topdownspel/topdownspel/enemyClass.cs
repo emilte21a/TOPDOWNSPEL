@@ -14,10 +14,12 @@ public class TextureClass
     public List<Texture2D> charTextures = new();
     public TextureClass(){
         charTextures.Add(Raylib.LoadTexture("gubbe.png"));
+        charTextures.Add(Raylib.LoadTexture("gubbeBack.png"));
         backgroundTextures.Add(Raylib.LoadTexture("bakgrundstart.png"));
         backgroundTextures.Add(Raylib.LoadTexture("upgradebakgrund.png"));
         backgroundTextures.Add(Raylib.LoadTexture("mainbackground.png"));
         otherTextures.Add(Raylib.LoadTexture("exitsign.png"));
+        otherTextures.Add(Raylib.LoadTexture("selectText.png"));
     }
 }
 
@@ -25,5 +27,7 @@ public class RunningClass
 {
     
    public Texture2D runningTexture = Raylib.LoadTexture("spring.png");
+   public Texture2D runningTexture2 = Raylib.LoadTexture("springBak.png");
+   public Texture2D runningTexture3 = Raylib.LoadTexture("springFram.png");
    
 }
