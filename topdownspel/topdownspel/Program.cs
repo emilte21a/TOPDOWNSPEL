@@ -1,26 +1,29 @@
 ﻿using Raylib_cs;
 using System.Numerics;
 
-const int screenWidth = 1024;
-const int screenHeight = 1024;
+const int screenWidth = 1080;
+const int screenHeight = 1080;
 
 Raylib.InitWindow(screenWidth, screenHeight, "Topdown game");
 Raylib.SetTargetFPS(60);
 
-int enemiesOnScreen = 1;
+int round = 1;
 
-List<enemyClass> enemies = new List<enemyClass>();
-enemies.Add(new enemyClass());
+int enemycount = round;
+
+var enemies = new List<enemyClass>();
 
 
-enemies[0].enemyRec.x = 1024;
+for (int i = 0; i == enemycount; i++)
+{
+    enemies.Add(new enemyClass());
+}
 
 
 TextureClass t = new(); 
 
 RunningClass r = new();
 
-int round = 1;
 
 float speed = 4.5f;
 
@@ -73,7 +76,7 @@ float timer1 = 0.0f;
 int frame = 0;
 int maxFrames = (8);
 
-void runningLogic()
+void runningLogic() //Bestämmer vilken frame som ska visas under springanimationen
 {
     timer1 += 0.06f;
         
@@ -112,10 +115,9 @@ float walkingX(float characterx, float speed)
 }
 
 static float walkingY(float charactery, float speed)
-{ //Metod för player movement. Görs i en metod så att jag slipper göra onödig mängd kod
-    if (Raylib.IsKeyDown(KeyboardKey.KEY_W) && charactery > 5)
+{ //Metod för player movement. Görs i en metod så att jag slipper göra onödig mängd kod varje gång jag vill att karaktären ska röra på sig
+    if (Raylib.IsKeyDown(KeyboardKey.KEY_W) && charactery > 8)
     {
-
         charactery -= speed;
     }
     if (Raylib.IsKeyDown(KeyboardKey.KEY_S) && charactery + 80 < screenHeight)
@@ -181,7 +183,6 @@ while (Raylib.WindowShouldClose() == false)
             
         
 
-
         
 
         if (Raylib.CheckCollisionRecs(characterRec, enemyRec.enemyRec) && dmgTimer == 1) //Gameover-scen när fienden och karaktären krockar
@@ -207,7 +208,7 @@ while (Raylib.WindowShouldClose() == false)
             timer.Stop();
             round++;
 
-            enemySpeed += 0.2f;
+            enemySpeed += 0.5f;
             characterRec.x = 150;
             characterRec.y = 0;
             finish.x = rnd.Next(512, 1000);
@@ -275,7 +276,7 @@ while (Raylib.WindowShouldClose() == false)
     {
 
 
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER))
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER)) 
         {
             characterRec.x = 0;
             characterRec.y = 0;
@@ -285,7 +286,7 @@ while (Raylib.WindowShouldClose() == false)
         }
     }
 
-    if (Raylib.IsKeyDown(KeyboardKey.KEY_ESCAPE))
+    if (Raylib.IsKeyDown(KeyboardKey.KEY_ESCAPE)) 
     {
         break;
     }
@@ -302,18 +303,21 @@ while (Raylib.WindowShouldClose() == false)
 
         Raylib.DrawTexture(t.backgroundTextures[2], 0, 0, Color.WHITE); //Spelbakgrund
         
-        
-            
+        Console.WriteLine(enemycount);
+        foreach (var enemy in enemies)
+        {
         Raylib.DrawTexture(enemyRec.enemyTexture, (int)enemyRec.enemyRec.x, (int)enemyRec.enemyRec.y, Color.WHITE); //Fiende texturen
+            
+        }
         
 
         
-        runningLogic();
+        runningLogic(); //Funktion för hur snabbt rektangeln ska röra på sig
 
-        Rectangle sourceRec = new Rectangle(80*frame, 0, 80, 80);
-        Rectangle sourceRec1 = new Rectangle(80*frame, 0, -80, 80);
+        Rectangle sourceRec = new Rectangle(80*frame, 0, 80, 80); //Source rektangel för karaktäranimation under rörelse
+        Rectangle sourceRec1 = new Rectangle(80*frame, 0, -80, 80); //Source rektangel för karaktär under rörelse i motsatt riktning
 
-
+        //Nedan är själva animationen som använder en sourcerec för att rita ut specifika positioner på ett spritesheet
         if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
         {
             Raylib.DrawTextureRec(r.runningTexture, sourceRec, characterPos, Color.WHITE);
@@ -336,7 +340,7 @@ while (Raylib.WindowShouldClose() == false)
         }
 
         
-
+        //Idle karaktär texturen som ritas ut när man inte rör sig
         else
         {
         Raylib.DrawTexture(t.charTextures[0], //Karaktär texturen
@@ -346,7 +350,8 @@ while (Raylib.WindowShouldClose() == false)
         }
 
 
-         if (Raylib.CheckCollisionRecs(characterRec, enemyRec.enemyRec) && dmgTimer == 1) 
+        //Kollar ifall karaktären och fienden har kolliderat och att dmgtimer är 1. Detta gör så att man endast kan ta skada en gång i sekunden
+        if (Raylib.CheckCollisionRecs(characterRec, enemyRec.enemyRec) && dmgTimer == 1) 
         {   
            Raylib.DrawTexture(t.charTextures[0], (int)characterRec.x, (int)characterRec.y,Color.RED);
         }
@@ -357,16 +362,19 @@ while (Raylib.WindowShouldClose() == false)
 
         Raylib.EndMode2D(); //Tillåter texterna nedan att ha en fast positions på skärmen.
 
-        Raylib.DrawText($"Round {round}", 400, 10, 30, Color.BLACK);
+        Raylib.DrawTexture(t.otherTextures[2], 760, 900, Color.WHITE);
+        Raylib.DrawTexture(t.otherTextures[3], 400, 0, Color.WHITE);
 
-        Raylib.DrawText($"Gold:{gold}", 400, 50, 30, Color.BLACK);
+        Raylib.DrawText($"{round}", 550, 40, 30, Color.BLACK);
 
-        Raylib.DrawText($"HP:{hp}", 400, 90, 30, Color.BLACK);
+        Raylib.DrawText($"Gold:{gold}", 850, 990, 30, Color.BLACK);
+
+        Raylib.DrawText($"HP:{hp}", 850, 940, 30, Color.BLACK);
     }
 
     else if (currentScene == "upgrade")
     {
-        Raylib.DrawTexture(t.backgroundTextures[1], 0, 0, Color.WHITE );
+        Raylib.DrawTexture(t.backgroundTextures[1], 0, 0, Color.WHITE ); //Bakgrundstextur
 
         Raylib.DrawRectangle(150, 700, 100, 100, Color.GOLD); 
         Raylib.DrawText("1", 200, 750, 20, Color.WHITE);

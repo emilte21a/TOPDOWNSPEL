@@ -3,6 +3,7 @@ using Raylib_cs;
 
 public class enemyClass
 {
+    
     public Texture2D enemyTexture = Raylib.LoadTexture("enemy.png");
     public Rectangle enemyRec = new Rectangle(800, 600, 80, 80);
 }
@@ -20,6 +21,8 @@ public class TextureClass
         backgroundTextures.Add(Raylib.LoadTexture("mainbackground.png"));
         otherTextures.Add(Raylib.LoadTexture("exitsign.png"));
         otherTextures.Add(Raylib.LoadTexture("selectText.png"));
+        otherTextures.Add(Raylib.LoadTexture("hpochpengar.png"));
+        otherTextures.Add(Raylib.LoadTexture("ROUNDD.png"));
     }
 }
 
