@@ -208,9 +208,9 @@ while (Raylib.WindowShouldClose() == false)
             timer.Stop();
         }
 
-        if (Raylib.CheckCollisionRecs(characterRec, finish) && gold >= 10)
+        if (Raylib.CheckCollisionRecs(characterRec, finish) && gold >= 5)
         {   
-            gold = gold - 10*round;
+            gold = gold - 5*round;
             timer.Stop();
             round++;
 
@@ -238,30 +238,30 @@ while (Raylib.WindowShouldClose() == false)
         characterRec.y = 700;
         characterRec.x = skipX(characterRec.x);
 
-        if (Raylib.CheckCollisionRecs(characterRec, upgrade1) && gold >= 50)
+        if (Raylib.CheckCollisionRecs(characterRec, upgrade1) && gold >= 20)
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
             {
             speed = speed + 0.2f;
-            gold = gold - 50;
+            gold = gold - 20;
             }
         }
 
-        if (Raylib.CheckCollisionRecs(characterRec, upgrade2) && gold >= 25 && hp<100)
+        if (Raylib.CheckCollisionRecs(characterRec, upgrade2) && gold >= 10 && hp<100)
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
             {
             hp = 100;
-            gold = gold - 25;
+            gold = gold - 10;
             }
         }
 
-        if (Raylib.CheckCollisionRecs(characterRec, upgrade3) && gold >= 50)
+        if (Raylib.CheckCollisionRecs(characterRec, upgrade3) && gold >= 20)
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
             {
             extragold++;
-            gold = gold - 50;
+            gold = gold - 20;
             }
         }
 
@@ -413,9 +413,9 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawText("4", 650, 750, 20, Color.WHITE);
 
         Raylib.DrawTexture(t.otherTextures[1], (int)characterRec.x, (int)characterRec.y, Color.WHITE);
-        Raylib.DrawText("1. Speed+0.2 (25 gold) Press SPACE to buy", 424, 150, 20, Color.WHITE);
+        Raylib.DrawText("1. Speed+0.2 (20 gold) Press SPACE to buy", 424, 150, 20, Color.WHITE);
         Raylib.DrawText("2. Full health (10 gold) Press SPACE to buy", 424, 300, 20, Color.WHITE);
-        Raylib.DrawText("3. +1 gold/sec (25 gold) Press SPACE to buy", 424, 450, 20, Color.WHITE);
+        Raylib.DrawText("3. +1 gold/sec (20 gold) Press SPACE to buy", 424, 450, 20, Color.WHITE);
         Raylib.DrawText("4. Play next round", 424, 600, 20, Color.WHITE);
         Raylib.DrawText($"Gold: {gold}", 25, 40, 30, Color.WHITE);
         Raylib.DrawText($"Gold/Sec: {extragold}", 25, 80, 30, Color.WHITE);
