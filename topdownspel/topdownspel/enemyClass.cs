@@ -23,6 +23,7 @@ public class TextureClass
         otherTextures.Add(Raylib.LoadTexture("selectText.png"));
         otherTextures.Add(Raylib.LoadTexture("hpochpengar.png"));
         otherTextures.Add(Raylib.LoadTexture("ROUNDD.png"));
+        otherTextures.Add(Raylib.LoadTexture("goldPickup.png"));
     }
 }
 

@@ -11,10 +11,10 @@ int round = 1;
 
 int enemycount = round;
 
-var enemies = new List<enemyClass>();
+List<enemyClass> enemies = new List<enemyClass>();
 
 
-for (int i = 0; i == enemycount; i++)
+for (int i = 0; i < 4; i++)
 {
     enemies.Add(new enemyClass());
 }
@@ -29,11 +29,16 @@ float speed = 4.5f;
 
 int dmgTimer = 60;
 
-int extragold = 1;
+int coinTimer = 120;
+
+int extragold = 0;
 
 Random rnd = new Random();
 int exitPosX = rnd.Next(512,944);
 int exitPosY = rnd.Next(512,944);
+
+int pickupPosX = rnd.Next(0, 1030); //Guld X position
+int pickupPosY = rnd.Next(0, 1030); //Guld Y position
 
 Rectangle characterRec = new Rectangle(0, 60, t.charTextures[0].width, t.charTextures[0].height);
 
@@ -65,12 +70,13 @@ int gold = 0;
 
 int hp = 100;
 
-void HandleTimer() //Timerfunktion: ökar guld med 2 varje sekund
+void HandleTimer() //Timerfunktion: ökar guld med 1 varje sekund
 {
 	gold = gold+extragold; //Guld ökar med extragold per sekund
 }
 System.Timers.Timer timer = new (interval: 1000); //Timer med intervallet 1 sekund
 timer.Elapsed += ( sender, e ) => HandleTimer();
+
 
 float timer1 = 0.0f;
 int frame = 0;
@@ -310,12 +316,30 @@ while (Raylib.WindowShouldClose() == false)
             
         }
         
-
         
         runningLogic(); //Funktion för hur snabbt rektangeln ska röra på sig
 
         Rectangle sourceRec = new Rectangle(80*frame, 0, 80, 80); //Source rektangel för karaktäranimation under rörelse
         Rectangle sourceRec1 = new Rectangle(80*frame, 0, -80, 80); //Source rektangel för karaktär under rörelse i motsatt riktning
+
+        Rectangle coinRecAnim = new Rectangle(20*frame, 0, 20, 32);
+
+        coinTimer--;
+
+        if (coinTimer < 0)
+        {
+            
+            Rectangle coinRec = new Rectangle(pickupPosX, pickupPosY, 32, 20);
+            Vector2 coinposition = new(pickupPosX, pickupPosY);
+            Raylib.DrawTextureRec(t.otherTextures[4], coinRecAnim, coinposition, Color.WHITE);
+
+            if (Raylib.CheckCollisionRecs(characterRec, coinRec)){
+                gold++;
+                coinTimer = 120;
+                pickupPosX = rnd.Next(0, 1030);
+                pickupPosY = rnd.Next(0, 1030);
+            }
+        }
 
         //Nedan är själva animationen som använder en sourcerec för att rita ut specifika positioner på ett spritesheet
         if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
@@ -389,9 +413,9 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawText("4", 650, 750, 20, Color.WHITE);
 
         Raylib.DrawTexture(t.otherTextures[1], (int)characterRec.x, (int)characterRec.y, Color.WHITE);
-        Raylib.DrawText("1. Speed+0.2 (50 gold) Press SPACE to buy", 424, 150, 20, Color.WHITE);
-        Raylib.DrawText("2. Full health (25 gold) Press SPACE to buy", 424, 300, 20, Color.WHITE);
-        Raylib.DrawText("3. +1 gold/sec (50 gold) Press SPACE to buy", 424, 450, 20, Color.WHITE);
+        Raylib.DrawText("1. Speed+0.2 (25 gold) Press SPACE to buy", 424, 150, 20, Color.WHITE);
+        Raylib.DrawText("2. Full health (10 gold) Press SPACE to buy", 424, 300, 20, Color.WHITE);
+        Raylib.DrawText("3. +1 gold/sec (25 gold) Press SPACE to buy", 424, 450, 20, Color.WHITE);
         Raylib.DrawText("4. Play next round", 424, 600, 20, Color.WHITE);
         Raylib.DrawText($"Gold: {gold}", 25, 40, 30, Color.WHITE);
         Raylib.DrawText($"Gold/Sec: {extragold}", 25, 80, 30, Color.WHITE);
