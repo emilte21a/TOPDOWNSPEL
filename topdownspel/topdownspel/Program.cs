@@ -156,21 +156,18 @@ static float skipX(float characterx)
     return characterx;
 }
 
+
+
 while (Raylib.WindowShouldClose() == false)
 {
 
     //LOGIK
     Vector2 characterPos = new Vector2(characterRec.x, characterRec.y);
     camera.target = characterPos;
-    dmgTimer--;
-    if (dmgTimer == 0){ //Damage timer där fienden endast kan skada dig en gång varje sekund
-        dmgTimer = 60;
-    }
     
 
     if (currentScene == "game")
     {
-        
         timer.Start();
         characterRec.x = walkingX(characterRec.x, speed);
         characterRec.y = walkingY(characterRec.y, speed);
@@ -188,10 +185,13 @@ while (Raylib.WindowShouldClose() == false)
         enemyRec.enemyRec.y += enemyMovement.Y;
             
         
-
+            dmgTimer--;   //Dmgtimer minskar med ett varje frame
+            if (dmgTimer == 0){ //Om Dmgtimer är lika med 0 så ska dmgtimer vara lika med 60
+            dmgTimer = 60;
+            }
         
 
-        if (Raylib.CheckCollisionRecs(characterRec, enemyRec.enemyRec) && dmgTimer == 1) //Gameover-scen när fienden och karaktären krockar
+        if (Raylib.CheckCollisionRecs(characterRec, enemyRec.enemyRec) && dmgTimer == 60) //Gameover-scen när fienden och karaktären krockar
         {   
             hp=hp-25;
         }
@@ -227,10 +227,19 @@ while (Raylib.WindowShouldClose() == false)
 
     else if (currentScene == "start")
     {
+        characterRec.y = 380;
+        characterRec.x = 20;
+
+        
+
         if (Raylib.IsKeyDown(KeyboardKey.KEY_SPACE))
         {
             currentScene = "game";
+            characterRec.x = 0;
+            characterRec.y = 0;
         }
+        
+
     }
 
     else if (currentScene == "upgrade")
@@ -426,9 +435,12 @@ while (Raylib.WindowShouldClose() == false)
     else if (currentScene == "start")
     {
         Raylib.DrawTexture(t.backgroundTextures[0], 0, 0, Color.WHITE);
-        Raylib.DrawText("Zombie Runner", 260, 225, 50, Color.ORANGE);
-        Raylib.DrawText("Press SPACE to start", 270, 280, 20, Color.ORANGE);
-        Raylib.DrawText("Press ESCAPE to quit", 30, 20, 20, Color.RED);
+        Raylib.DrawText("Zombie Runner", 20, 225, 70, Color.BROWN);
+        Raylib.DrawText("Zombie Runner", 20, 225, 70, Color.ORANGE);
+        Raylib.DrawRectangle(20, 380, 100, 100, Color.GOLD); 
+        Raylib.DrawTexture(t.otherTextures[5], (int)characterRec.x, (int)characterRec.y, Color.WHITE);
+        Raylib.DrawText("Press SPACE to start", 20, 500, 50, Color.ORANGE);
+        Raylib.DrawText("Press ESCAPE to quit", 20, 600, 50, Color.RED);
     }
 
     else
