@@ -19,6 +19,7 @@ public class TextureClass
         backgroundTextures.Add(Raylib.LoadTexture("bakgrundstart.png"));
         backgroundTextures.Add(Raylib.LoadTexture("upgradebakgrund.png"));
         backgroundTextures.Add(Raylib.LoadTexture("mainbackground.png"));
+        backgroundTextures.Add(Raylib.LoadTexture("gameOverscreen.png"));
         otherTextures.Add(Raylib.LoadTexture("exitsign.png"));
         otherTextures.Add(Raylib.LoadTexture("selectText.png"));
         otherTextures.Add(Raylib.LoadTexture("hpochpengar.png"));

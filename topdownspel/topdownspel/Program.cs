@@ -34,8 +34,8 @@ int coinTimer = 120;
 int extragold = 0;
 
 Random rnd = new Random();
-int exitPosX = rnd.Next(512,944);
-int exitPosY = rnd.Next(512,944);
+int exitPosX = rnd.Next(540,944);
+int exitPosY = rnd.Next(540,900);
 
 int pickupPosX = rnd.Next(0, 1030); //Guld X position
 int pickupPosY = rnd.Next(0, 1030); //Guld Y position
@@ -53,6 +53,9 @@ Rectangle upgrade2 = new Rectangle(300, 700, 100, 100); //Rektangel för full hp
 Rectangle upgrade3 = new Rectangle(450, 700, 100, 100); //Rektangel för extra guld per sekund
 
 Rectangle nextround = new Rectangle(600, 700, 300, 100); //Rektangel för nästa runda
+
+Rectangle playGame = new Rectangle(500, 500, 100, 40); //Rektangel för att kolla kollisions i start
+
 
 Vector2 position = new Vector2(40, 300);
 
@@ -156,6 +159,27 @@ static float skipX(float characterx)
     return characterx;
 }
 
+static float skipY(float charactery)
+{
+    if (Raylib.IsKeyPressed(KeyboardKey.KEY_S))
+    {
+        charactery += 100;
+        if (charactery > 600 )
+    {
+        charactery = 500;
+    }
+    }
+    if (Raylib.IsKeyPressed(KeyboardKey.KEY_W))
+    {
+        charactery -= 100;
+
+        if (charactery < 500)
+    {
+        charactery = 600;
+    }
+    }
+    return charactery;
+}
 
 
 while (Raylib.WindowShouldClose() == false)
@@ -227,16 +251,17 @@ while (Raylib.WindowShouldClose() == false)
 
     else if (currentScene == "start")
     {
-        characterRec.y = 380;
-        characterRec.x = 20;
+        characterRec.y = skipY(characterRec.y);
+        characterRec.x = 500;
 
-        
-
+        if (Raylib.CheckCollisionRecs(characterRec, playGame));
+        {
         if (Raylib.IsKeyDown(KeyboardKey.KEY_SPACE))
         {
             currentScene = "game";
             characterRec.x = 0;
             characterRec.y = 0;
+        }
         }
         
 
@@ -435,18 +460,19 @@ while (Raylib.WindowShouldClose() == false)
     else if (currentScene == "start")
     {
         Raylib.DrawTexture(t.backgroundTextures[0], 0, 0, Color.WHITE);
-        Raylib.DrawText("Zombie Runner", 20, 225, 70, Color.BROWN);
+        Raylib.DrawText("Zombie Runner", 18, 227, 70, Color.BROWN);
         Raylib.DrawText("Zombie Runner", 20, 225, 70, Color.ORANGE);
-        Raylib.DrawRectangle(20, 380, 100, 100, Color.GOLD); 
+        Raylib.DrawRectangle(500, 500, 100, 40, Color.GOLD); 
         Raylib.DrawTexture(t.otherTextures[5], (int)characterRec.x, (int)characterRec.y, Color.WHITE);
-        Raylib.DrawText("Press SPACE to start", 20, 500, 50, Color.ORANGE);
-        Raylib.DrawText("Press ESCAPE to quit", 20, 600, 50, Color.RED);
+        Raylib.DrawText("Press SPACE to start", 20, 500, 30, Color.ORANGE);
+        Raylib.DrawText("Press ESCAPE to quit", 20, 600, 30, Color.RED);
     }
 
     else
     {
-        Raylib.DrawText("You lost!", 300, 225, 30, Color.ORANGE);
-        Raylib.DrawText("Press ENTER to start again", 300, 260, 15, Color.ORANGE);
+        Raylib.DrawTexture(t.backgroundTextures[3], 0, 0, Color.WHITE);
+        Raylib.DrawText("You lost!", 20, 225, 50, Color.ORANGE);
+        Raylib.DrawText("Press ENTER to start again", 20, 280, 30, Color.ORANGE);
     }
 
     Raylib.EndDrawing();
