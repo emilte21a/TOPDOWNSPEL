@@ -10,6 +10,8 @@ public class TextureClass
         charTextures.Add(Raylib.LoadTexture("gubbe.png"));
         charTextures.Add(Raylib.LoadTexture("gubbeBack.png"));
         charTextures.Add(Raylib.LoadTexture("enemy.png"));
+        charTextures.Add(Raylib.LoadTexture("enemymedium.png"));
+        charTextures.Add(Raylib.LoadTexture("enemyhard.png"));
         backgroundTextures.Add(Raylib.LoadTexture("bakgrundstart.png"));
         backgroundTextures.Add(Raylib.LoadTexture("upgradebakgrund.png"));
         backgroundTextures.Add(Raylib.LoadTexture("mainbackground.png"));

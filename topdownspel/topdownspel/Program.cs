@@ -13,6 +13,7 @@ int enemycount = round;
 
 List<enemyClass> enemies = new List<enemyClass>();
 enemies.Add(new enemyClass());
+enemies.Add(new enemyClass());
 
 TextureClass t = new(); 
 
@@ -26,7 +27,11 @@ int extragold = 0;
 int gold = 0;
 int hp = 100;
 bool beginGame = false;
+string currentDifficulty = "easy";
+int diffInt = 2;
 
+int plusGoldAmount = 1;
+int plusSpeedAmount = 1;
 
 Color alpha = new Color(0, 0, 0, 0);
 int alphavariable = 0;
@@ -42,7 +47,7 @@ Rectangle characterRec = new Rectangle(0, 60, t.charTextures[0].width, t.charTex
 
 enemyClass enemyRec = new enemyClass();
 
-Rectangle finish = new Rectangle(exitPosX, exitPosY, t.otherTextures[0].width-10, t.otherTextures[0].height-10);
+Rectangle finish = new Rectangle(exitPosX, exitPosY, t.otherTextures[0].width-20, t.otherTextures[0].height-20);
 
 Rectangle upgrade1 = new Rectangle(150, 700, 100, 100); //Rektangel för extra speed
 
@@ -52,9 +57,11 @@ Rectangle upgrade3 = new Rectangle(450, 700, 100, 100); //Rektangel för extra g
 
 Rectangle nextround = new Rectangle(600, 700, 300, 100); //Rektangel för nästa runda
 
-Rectangle playGame = new Rectangle(500, 500, 100, 40); //Rektangel för att kolla kollision när man ska starta spelet
+Rectangle playGame = new Rectangle(20, 500, 150, 50); //Rektangel för att kolla kollision när man ska starta spelet
 
-Rectangle exitGame = new Rectangle(500, 600, 100, 40); //Rektangel för att kolla kollision när man vill avsluta spelet
+Rectangle difficulty = new Rectangle(20, 600, 150, 50); //Rektangel för att kolla kollision när man ska byta svårighet
+
+Rectangle exitGame = new Rectangle(20, 700, 150, 50); //Rektangel för att kolla kollision när man vill avsluta spelet
 
 Vector2 position = new Vector2(40, 300);
 
@@ -94,9 +101,9 @@ int maxFrames = (8);
 
 void runningLogic() //Bestämmer vilken frame som ska visas under springanimationen
 {
-    timer1 += 0.06f;
+    timer1 += 0.06f; //Timer ökar med 0.06 varje frame. 60 gånger per sekund
         
-    if (timer1 > 0.4f)
+    if (timer1 > 0.4f) //Om timer är större än 0.4. Timer är 0 och frame är lika med +1. Frame ökar tills maxframes uppnås, alltså 8.
     {
     timer1 = 0.0f;
     frame +=1;
@@ -115,7 +122,7 @@ Vector2 enemyMovement = new Vector2(1, 0);
 float enemySpeed = 3;
 
 
-float walkingX(float characterx, float speed)
+float walkingX(float characterx, float speed) //Fick denna koden från Theo och optimiserade den för mitt egna spel
 {
     if (Raylib.IsKeyDown(KeyboardKey.KEY_D) && characterx < (screenWidth - 80))
     {
@@ -130,11 +137,11 @@ float walkingX(float characterx, float speed)
 
 static float walkingY(float charactery, float speed)
 { //Metod för player movement. Görs i en metod så att jag slipper göra onödig mängd kod varje gång jag vill att karaktären ska röra på sig
-    if (Raylib.IsKeyDown(KeyboardKey.KEY_W) && charactery > 8)
+    if (Raylib.IsKeyDown(KeyboardKey.KEY_W) && charactery > 8) //Om W-knappen är nedtryck och karaktärens y-position är större än 8, så ska karaktärens position minska med speed.
     {
         charactery -= speed;
     }
-    if (Raylib.IsKeyDown(KeyboardKey.KEY_S) && charactery + 80 < screenHeight)
+    if (Raylib.IsKeyDown(KeyboardKey.KEY_S) && charactery + 80 < screenHeight) //Om S-knappen är nedtryck och karaktärens y-position+80 är mindre än skärmens höjd, så ska karaktärens position öka med speed.
     {
 
         charactery += speed;
@@ -169,7 +176,7 @@ static float skipY(float charactery)
     if (Raylib.IsKeyPressed(KeyboardKey.KEY_S))
     {
         charactery += 100;
-        if (charactery > 600 )
+        if (charactery > 700 )
     {
         charactery = 500;
     }
@@ -180,13 +187,13 @@ static float skipY(float charactery)
 
         if (charactery < 500)
     {
-        charactery = 600;
+        charactery = 700;
     }
     }
     return charactery;
 }
 
-characterRec.y = 500;
+characterRec.y = 500; 
 while (Raylib.WindowShouldClose() == false)
 {
 
@@ -263,14 +270,12 @@ while (Raylib.WindowShouldClose() == false)
 
     else if (currentScene == "start")
     {   
-        characterRec.y = skipY(characterRec.y);
-        characterRec.x = 500;
-
         if (Raylib.CheckCollisionRecs(characterRec, playGame))
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_ENTER))
             {
             beginGame=true;
+            characterRec.y = 500;
             }
 
             if (beginGame == true && alphavariable<255)
@@ -284,6 +289,14 @@ while (Raylib.WindowShouldClose() == false)
             currentScene = "game";
             resetCharPos();
             }
+        }
+            else if (Raylib.CheckCollisionRecs(characterRec, difficulty))
+            {
+                if (Raylib.IsKeyPressed(KeyboardKey.KEY_ENTER))
+            {
+                currentScene = "chooseDiff";
+            }
+            }
 
             else if(Raylib.CheckCollisionRecs(characterRec, exitGame))
             {
@@ -292,9 +305,57 @@ while (Raylib.WindowShouldClose() == false)
                 break;
             }
             }
+        characterRec.y = skipY(characterRec.y);
+        characterRec.x = 20;
+    }
+
+    else if (currentScene== "chooseDiff")
+    {
+        
+        if (Raylib.IsKeyPressed(KeyboardKey.KEY_D))
+        {
+            diffInt++;   
+            if (diffInt > 4)
+            {
+                diffInt=2;
+            }
         }
         
 
+        
+        else if (Raylib.IsKeyPressed(KeyboardKey.KEY_A))
+        {
+            diffInt--;   
+            
+            if (diffInt < 2)
+            {
+                diffInt=4;
+            }
+        }
+        
+        switch (diffInt)
+        {
+            case 2:
+            currentDifficulty= "easy";
+            enemySpeed=2;
+            break;
+
+            case 3:
+            currentDifficulty= "medium";
+            enemySpeed=3;
+            break;
+
+            case 4:
+            currentDifficulty= "hard";
+            enemySpeed=4;
+            break;
+        }
+
+        if (Raylib.IsKeyPressed(KeyboardKey.KEY_ENTER))
+        {
+            currentScene = "start";
+        }
+        
     }
 
     else if (currentScene == "upgrade")
@@ -303,30 +364,33 @@ while (Raylib.WindowShouldClose() == false)
         characterRec.y = 700;
         characterRec.x = skipX(characterRec.x);
 
-        if (Raylib.CheckCollisionRecs(characterRec, upgrade1) && gold >= 20)
+        if (Raylib.CheckCollisionRecs(characterRec, upgrade1) && gold >= 20*plusSpeedAmount)
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
             {
             speed = speed + 0.2f;
-            gold = gold - 20;
+            gold = gold - 20*plusSpeedAmount;
+            plusSpeedAmount++;
+            
             }
         }
 
-        if (Raylib.CheckCollisionRecs(characterRec, upgrade2) && gold >= 10 && hp<100)
+        if (Raylib.CheckCollisionRecs(characterRec, upgrade2) && gold >= 10*round && hp<100)
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
             {
             hp = 100;
-            gold = gold - 10;
+            gold = gold - 10*round;
             }
         }
 
-        if (Raylib.CheckCollisionRecs(characterRec, upgrade3) && gold >= 20)
+        if (Raylib.CheckCollisionRecs(characterRec, upgrade3) && gold >= 20*plusGoldAmount)
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
             {
             extragold++;
-            gold = gold - 20;
+            gold = gold - 20*plusGoldAmount;
+            plusGoldAmount++;
             }
         }
 
@@ -348,6 +412,7 @@ while (Raylib.WindowShouldClose() == false)
         {
             resetCharPos();
             currentScene = "start";
+            characterRec.y = 500;
         }
     }
 
@@ -358,6 +423,7 @@ while (Raylib.WindowShouldClose() == false)
         if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER)) 
         {
             resetCharPos();
+            characterRec.y = 500;
             currentScene = "start";
         }
     }
@@ -390,7 +456,7 @@ while (Raylib.WindowShouldClose() == false)
         //Console.WriteLine(enemycount);
         foreach (var enemy in enemies)
         {
-        Raylib.DrawTexture(t.charTextures[2], (int)enemyRec.enemyRec.x, (int)enemyRec.enemyRec.y, Color.WHITE); //Fiende texturen
+        Raylib.DrawTexture(t.charTextures[diffInt], (int)enemyRec.enemyRec.x, (int)enemyRec.enemyRec.y, Color.WHITE); //Fiende texturen
             
         }
         
@@ -485,6 +551,15 @@ while (Raylib.WindowShouldClose() == false)
         }
     }
 
+    else if (currentScene == "chooseDiff")
+    {
+        Raylib.ClearBackground(Color.BLACK);
+        Raylib.DrawRectangle(0, 0, 1080, 1080, Color.BLACK);
+        Raylib.DrawTexture(t.charTextures[diffInt], 530, 540, Color.WHITE);
+        Raylib.DrawText(currentDifficulty, 50, 50, 60, Color.ORANGE);
+        Raylib.DrawText("Press ENTER to choose", 480, 900, 20, Color.WHITE);
+    }
+
     else if (currentScene == "upgrade")
     {
         Raylib.DrawTexture(t.backgroundTextures[1], 0, 0, Color.WHITE ); //Bakgrundstextur
@@ -502,9 +577,9 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawText("4", 650, 750, 20, Color.WHITE);
 
         Raylib.DrawTexture(t.otherTextures[1], (int)characterRec.x, (int)characterRec.y, Color.WHITE);
-        Raylib.DrawText("1. Speed+0.2 (20 gold) Press SPACE to buy", 424, 150, 20, Color.WHITE);
-        Raylib.DrawText("2. Full health (10 gold) Press SPACE to buy", 424, 300, 20, Color.WHITE);
-        Raylib.DrawText("3. +1 gold/sec (20 gold) Press SPACE to buy", 424, 450, 20, Color.WHITE);
+        Raylib.DrawText($"1. Speed+0.2 ({20*plusSpeedAmount}) Press SPACE to buy", 424, 150, 20, Color.WHITE);
+        Raylib.DrawText($"2. Full health ({10*round}) Press SPACE to buy", 424, 300, 20, Color.WHITE);
+        Raylib.DrawText($"3. +1 gold/sec ({20*plusGoldAmount}) Press SPACE to buy", 424, 450, 20, Color.WHITE);
         Raylib.DrawText("4. Play next round", 424, 600, 20, Color.WHITE);
         Raylib.DrawText($"Gold: {gold}", 25, 40, 30, Color.WHITE);
         Raylib.DrawText($"Gold/Sec: {extragold}", 25, 80, 30, Color.WHITE);
@@ -517,9 +592,12 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawText("Zombie Runner", 18, 227, 70, Color.BROWN);
         Raylib.DrawText("Zombie Runner", 20, 225, 70, Color.ORANGE);
         //Raylib.DrawRectangle(500, 500, 100, 40, Color.GOLD); 
+        Raylib.DrawText("Start", 60, 517, 26, Color.ORANGE);
+        Raylib.DrawText("Difficulty", 35, 617, 26, Color.ORANGE);
+        Raylib.DrawText("Exit", 60, 717, 26, Color.RED);
         Raylib.DrawTexture(t.otherTextures[5], (int)characterRec.x, (int)characterRec.y, Color.WHITE);
-        Raylib.DrawText("Start", 20, 500, 30, Color.ORANGE);
-        Raylib.DrawText("Exit", 20, 600, 30, Color.RED);
+
+        Raylib.DrawText($"Difficulty:{currentDifficulty}", 700, 600, 40, Color.WHITE);
         Raylib.DrawText("Escape the Zombie by gathering enough coins to reach the next round!", 20, 400, 20, Color.WHITE);
         Raylib.DrawText("It costs 5 coins per round to exit! Reach round 10 in order to win.", 20, 425, 20, Color.WHITE);
         Raylib.DrawText("Every round the cost to exit increases with 5 coins!", 20, 450, 20, Color.WHITE);
@@ -527,14 +605,14 @@ while (Raylib.WindowShouldClose() == false)
     }
 
     else if (currentScene == "winScene"){
-        characterRec.y = 500;
+      
         Raylib.DrawText("You won, Congratulations!", 20, 225, 50, Color.ORANGE);
         Raylib.DrawText("Press ENTER to start again", 20, 280, 30, Color.ORANGE);
         Raylib.DrawText("Press ESCAPE to exit", 20, 310, 30, Color.ORANGE);
     }
     else
     {
-        characterRec.y = 500;
+        
         Raylib.DrawTexture(t.backgroundTextures[3], 0, 0, Color.WHITE);
         Raylib.DrawText("You lost!", 20, 225, 50, Color.ORANGE);
         Raylib.DrawText("Press ENTER to start again", 20, 280, 30, Color.ORANGE);
