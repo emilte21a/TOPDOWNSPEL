@@ -16,12 +16,14 @@ public class TextureClass
         backgroundTextures.Add(Raylib.LoadTexture("upgradebakgrund.png"));
         backgroundTextures.Add(Raylib.LoadTexture("mainbackground.png"));
         backgroundTextures.Add(Raylib.LoadTexture("gameOverscreen.png"));
+        backgroundTextures.Add(Raylib.LoadTexture("winScreen.png"));
         otherTextures.Add(Raylib.LoadTexture("exitsign.png"));
         otherTextures.Add(Raylib.LoadTexture("selectText.png"));
         otherTextures.Add(Raylib.LoadTexture("hpochpengar.png"));
         otherTextures.Add(Raylib.LoadTexture("ROUNDD.png"));
         otherTextures.Add(Raylib.LoadTexture("goldPickup.png"));
         otherTextures.Add(Raylib.LoadTexture("ARROW.png"));
+        otherTextures.Add(Raylib.LoadTexture("howToInstruct.png"));
     }
 }
 

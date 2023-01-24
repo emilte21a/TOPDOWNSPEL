@@ -266,6 +266,11 @@ while (Raylib.WindowShouldClose() == false)
             
         }
 
+        if (round==6)
+        {
+            currentScene="winScene";
+        }
+
     }
 
     else if (currentScene == "start")
@@ -400,7 +405,6 @@ while (Raylib.WindowShouldClose() == false)
             {
 
             currentScene = "game";
-            enemies.Add(new enemyClass());
             resetCharPos();
             }
         }
@@ -577,14 +581,14 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawText("4", 650, 750, 20, Color.WHITE);
 
         Raylib.DrawTexture(t.otherTextures[1], (int)characterRec.x, (int)characterRec.y, Color.WHITE);
-        Raylib.DrawText($"1. Speed+0.2 ({20*plusSpeedAmount}) Press SPACE to buy", 424, 150, 20, Color.WHITE);
-        Raylib.DrawText($"2. Full health ({10*round}) Press SPACE to buy", 424, 300, 20, Color.WHITE);
-        Raylib.DrawText($"3. +1 gold/sec ({20*plusGoldAmount}) Press SPACE to buy", 424, 450, 20, Color.WHITE);
-        Raylib.DrawText("4. Play next round", 424, 600, 20, Color.WHITE);
-        Raylib.DrawText($"Gold: {gold}", 25, 40, 30, Color.WHITE);
-        Raylib.DrawText($"Gold/Sec: {extragold}", 25, 80, 30, Color.WHITE);
-        Raylib.DrawText($"Speed: {speed}", 25, 120, 30, Color.WHITE);
-        Raylib.DrawText($"Health: {hp}", 25, 160, 30, Color.WHITE);
+        Raylib.DrawText($"1. Speed+0.2 ({20*plusSpeedAmount}) Press SPACE to buy", 540, 150, 20, Color.WHITE);
+        Raylib.DrawText($"2. Full health ({10*round}) Press SPACE to buy", 540, 200, 20, Color.WHITE);
+        Raylib.DrawText($"3. +1 gold/sec ({20*plusGoldAmount}) Press SPACE to buy", 540, 250, 20, Color.WHITE);
+        Raylib.DrawText("4. Play next round", 540, 300, 20, Color.WHITE);
+        Raylib.DrawText($"Gold: {gold}", 150, 80, 30, Color.WHITE);
+        Raylib.DrawText($"Gold/Sec: {extragold}", 150, 160, 30, Color.WHITE);
+        Raylib.DrawText($"Speed: {speed}", 150, 240, 30, Color.WHITE);
+        Raylib.DrawText($"Health: {hp}", 150, 320, 30, Color.WHITE);
     }   
     else if (currentScene == "start")
     {
@@ -598,21 +602,31 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawTexture(t.otherTextures[5], (int)characterRec.x, (int)characterRec.y, Color.WHITE);
 
         Raylib.DrawText($"Difficulty:{currentDifficulty}", 700, 600, 40, Color.WHITE);
-        Raylib.DrawText("Escape the Zombie by gathering enough coins to reach the next round!", 20, 400, 20, Color.WHITE);
-        Raylib.DrawText("It costs 5 coins per round to exit! Reach round 10 in order to win.", 20, 425, 20, Color.WHITE);
-        Raylib.DrawText("Every round the cost to exit increases with 5 coins!", 20, 450, 20, Color.WHITE);
+        Raylib.DrawText("Press T to see instructions!", 20, 400, 40, Color.WHITE);
+        
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_T))
+        {
+        Raylib.DrawTexture(t.otherTextures[6],100, 0, Color.WHITE);
+        Raylib.DrawText("Use WASD to move around", 170, 350, 20, Color.WHITE);
+        Raylib.DrawText("Escape the Zombie by gathering enough coins to reach the next round!", 170, 400, 20, Color.WHITE);
+        Raylib.DrawText("It costs 5 coins per round to exit! Reach round 5 in order to win.", 170, 450, 20, Color.WHITE);
+        Raylib.DrawText("Every round the cost to exit to the upgrade-room increases with 5 coins!", 170, 500, 20, Color.WHITE);
+        Raylib.DrawText("The zombie will get faster and faster every round!", 170, 550, 20, Color.WHITE);
+        Raylib.DrawText("Be vary of what you spend your gold on!", 170, 600, 20, Color.WHITE);
+        }
+        
+
         Raylib.DrawRectangle(0, 0, 1080, 1080, alpha);
     }
 
     else if (currentScene == "winScene"){
-      
+        Raylib.DrawTexture(t.backgroundTextures[4], 0, 0, Color.WHITE);
         Raylib.DrawText("You won, Congratulations!", 20, 225, 50, Color.ORANGE);
         Raylib.DrawText("Press ENTER to start again", 20, 280, 30, Color.ORANGE);
         Raylib.DrawText("Press ESCAPE to exit", 20, 310, 30, Color.ORANGE);
     }
     else
     {
-        
         Raylib.DrawTexture(t.backgroundTextures[3], 0, 0, Color.WHITE);
         Raylib.DrawText("You lost!", 20, 225, 50, Color.ORANGE);
         Raylib.DrawText("Press ENTER to start again", 20, 280, 30, Color.ORANGE);
