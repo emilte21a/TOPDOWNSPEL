@@ -31,6 +31,7 @@ class enemyClass
 {
     public Rectangle enemyRec = new Rectangle(800, 600, 80, 80);
 }
+
 public class RunningClass
 {
     

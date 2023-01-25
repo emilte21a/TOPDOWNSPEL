@@ -13,14 +13,13 @@ int enemycount = round;
 
 List<enemyClass> enemies = new List<enemyClass>();
 enemies.Add(new enemyClass());
-enemies.Add(new enemyClass());
 
 TextureClass t = new(); 
 
 RunningClass r = new();
 
 
-float speed = 4.5f; //Karaktär speed
+
 int dmgTimer = 60;
 int coinTimer = 120;
 int extragold = 0;
@@ -121,6 +120,8 @@ string currentScene = "start"; //start, game, gameover
 Vector2 enemyMovement = new Vector2(1, 0);
 float enemySpeed = 3;
 
+float speed = 4.5f; //Karaktär speed
+
 
 float walkingX(float characterx, float speed) //Fick denna koden från Theo och optimiserade den för mitt egna spel
 {
@@ -210,15 +211,8 @@ while (Raylib.WindowShouldClose() == false)
         characterRec.x = walkingX(characterRec.x, speed); 
         characterRec.y = walkingY(characterRec.y, speed);
 
-        //for (var i = 1; i == round ; i++);
-        //{
-            //enemies.Add(new enemyClass());
-        //}
-
         Vector2 playerPos = new Vector2(characterRec.x, characterRec.y);
 
-
-        
         Vector2 fiendePos = new Vector2(enemyRec.enemyRec.x, enemyRec.enemyRec.y);
         Vector2 diff = playerPos - fiendePos;
         Vector2 fiendeDirection = Vector2.Normalize(diff);
@@ -238,8 +232,9 @@ while (Raylib.WindowShouldClose() == false)
             hp=hp-25;
         }
 
-        if (hp ==0)
+        if (hp ==0) 
         {
+            alphavariable = 0;
             currentDifficulty= "easy";
             enemySpeed=2;
             currentScene = "gameover";
@@ -271,6 +266,7 @@ while (Raylib.WindowShouldClose() == false)
         if (round==6)
         {
             currentScene="winScene";
+            alphavariable = 0;
         }
 
     }
@@ -279,7 +275,7 @@ while (Raylib.WindowShouldClose() == false)
     {   
         if (Raylib.CheckCollisionRecs(characterRec, playGame))
         {
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_ENTER))
+            if (Raylib.IsKeyReleased(KeyboardKey.KEY_ENTER))
             {
             beginGame=true;
             characterRec.y = 500;
@@ -414,7 +410,7 @@ while (Raylib.WindowShouldClose() == false)
 
     else if (currentScene == "winScene")
     {
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER)) 
+        if (Raylib.IsKeyReleased(KeyboardKey.KEY_ENTER)) 
         {
             resetCharPos();
             currentScene = "start";
@@ -424,9 +420,7 @@ while (Raylib.WindowShouldClose() == false)
 
     else
     {
-
-
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER)) 
+        if (Raylib.IsKeyReleased(KeyboardKey.KEY_ENTER)) 
         {
             resetCharPos();
             characterRec.y = 500;
@@ -457,7 +451,7 @@ while (Raylib.WindowShouldClose() == false)
 
         Raylib.DrawTexture(t.backgroundTextures[2], 0, 0, Color.WHITE); //Spelbakgrund
         
-         Raylib.DrawTexture(t.otherTextures[0], (int)finish.x, (int)finish.y, Color.WHITE);
+        Raylib.DrawTexture(t.otherTextures[0], (int)finish.x, (int)finish.y, Color.WHITE);
 
         //Console.WriteLine(enemycount);
         foreach (var enemy in enemies)
@@ -632,6 +626,7 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawTexture(t.backgroundTextures[3], 0, 0, Color.WHITE);
         Raylib.DrawText("You lost!", 20, 225, 50, Color.ORANGE);
         Raylib.DrawText("Press ENTER to start again", 20, 280, 30, Color.ORANGE);
+        Raylib.DrawText("Press ESCAPE to exit", 20, 310, 30, Color.ORANGE);
     }
     Raylib.EndDrawing();
 }
