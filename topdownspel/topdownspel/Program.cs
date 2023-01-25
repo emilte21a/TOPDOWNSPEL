@@ -240,6 +240,8 @@ while (Raylib.WindowShouldClose() == false)
 
         if (hp ==0)
         {
+            currentDifficulty= "easy";
+            enemySpeed=2;
             currentScene = "gameover";
             enemyRec.enemyRec.x = 1024;
             enemyRec.enemyRec.y = 1024;
