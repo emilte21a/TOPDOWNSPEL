@@ -28,7 +28,7 @@ int diffInt = 2;
 int plusGoldAmount = 1;
 int plusSpeedAmount = 1;
 
-Color alpha = new Color(0, 0, 0, 0);
+Color alpha = new Color(0, 0, 0, 0); //Tagna från Theo
 int alphavariable = 0;
 
 Random rnd = new Random();
