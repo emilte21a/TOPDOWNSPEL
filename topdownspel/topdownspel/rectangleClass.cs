@@ -18,7 +18,4 @@ public static Rectangle difficulty = new Rectangle(20, 600, 150, 50); //Rektange
 
 public static Rectangle exitGame = new Rectangle(20, 700, 150, 50); //Rektangel för att kolla kollision när man vill avsluta spelet
 
-public static Rectangle sourceRec = new Rectangle(80*VariableClass.frame, 0, 80, 80); //Source rektangel för karaktäranimation under rörelse
-public static Rectangle sourceRec1 = new Rectangle(80*VariableClass.frame, 0, -80, 80); //Source rektangel för karaktär under rörelse i motsatt riktning
-public static Rectangle coinRecAnim = new Rectangle(20*VariableClass.frame, 0, 20, 32); //Source rektangel för guldcoinens spritesheet
 }

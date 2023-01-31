@@ -1,8 +1,6 @@
 ﻿using Raylib_cs;
 using System.Numerics;
 
-//Konstant int för skrämbredden och höden så att jag slipper ändra båda två där de används
-
 Raylib.InitWindow(VariableClass.screenWidth, VariableClass.screenHeight, "Topdown game");
 Raylib.SetTargetFPS(60);
 
@@ -25,8 +23,8 @@ camera.zoom = 1;
 camera.rotation = 0;
 camera.offset = new Vector2(VariableClass.screenWidth / 2, VariableClass.screenHeight / 2);
 
-
-System.Timers.Timer timer = new (interval: 1000); //Timer med intervallet 1 sekund
+//Timer med intervallet 1 sekund (1000 milisekunder)
+System.Timers.Timer timer = new (interval: 1000); 
 timer.Elapsed += ( sender, e ) => methodClass.HandleTimer();
 
 void resetCharPos()
@@ -35,9 +33,7 @@ void resetCharPos()
     characterRec.y = 0;
 }
 
-//Fiende egenskaper
 
-float speed = 4.5f; //Karaktär speed
 
 static float walkingX(float characterx, float speed) //Fick denna koden från Theo och optimiserade den för mitt egna spel
 {
@@ -52,7 +48,12 @@ static float walkingX(float characterx, float speed) //Fick denna koden från Th
     return characterx;
 }
 
-//Om W-knappen trycks så rör sig karaktären uppåt 
+//WalkingX
+//Om D-knappen trycks och karaktärens X-position är mindre än skrämbredden-80. 
+//Öka karaktärens X-position med variabeln speed. 
+
+//Om A-knappen trycks och karaktärens X är större än 0. 
+//Minska karaktärens X-position med variabeln speed. 
 
 static float walkingY(float charactery, float speed)
 { //Metod för player movement. Görs i en metod så att jag slipper göra onödig mängd kod varje gång jag vill att karaktären ska röra på sig
@@ -66,6 +67,13 @@ static float walkingY(float charactery, float speed)
     }
     return charactery;
 }
+//WalkingY
+//Om W-knappen trycks och karaktärens Y-position är större än 8. 
+//Minska karaktärens Y-position med variabeln speed. 
+
+//Om S-knappen trycks och karaktärens Y-position+80 är mindre än variabeln för skärmhöjden. 
+//Öka karaktärens Y-position med variabeln speed. 
+
 
 static float skipX(float characterx)
 {
@@ -87,6 +95,13 @@ static float skipX(float characterx)
     }
     return characterx;
 }
+
+//SkipX
+//Om D-knappen trycks, så ökar karaktärens X-position med 150 pixlar. 
+//Om karaktärens X-position är större än 600, så är den nya positionen 150.
+
+//Om A-knappen trycks, så minskar karaktärens X-position med 150 pixlar. 
+//Om karaktärens X-position är mindre än 150, så är den nya positionen 600.
 
 static float skipY(float charactery)
 {
@@ -110,21 +125,32 @@ static float skipY(float charactery)
     return charactery;
 }
 
+//SkipY
+//Om S-knappen trycks, så ökar karaktärens Y-position med 100 pixlar. 
+//Om karaktärens X-position är större än 700, så är den nya positionen 500.
+
+//Om W-knappen trycks, så minskar karaktärens Y-position med 100 pixlar. 
+//Om karaktärens X-position är större än 500, så är den nya positionen 700.
+
 characterRec.y = 500; 
 while (Raylib.WindowShouldClose() == false)
 {
-    //LOGIK
+    //=========================================LOGIK======================
     Vector2 characterPos = new Vector2(characterRec.x, characterRec.y);
-    camera.target = characterPos;
+    camera.target = characterPos; //Kamerans target är karaktärens position
 
     
 
     if (VariableClass.currentScene == "game") 
     {
         timer.Start(); //Starta timer
-        characterRec.x = walkingX(characterRec.x, speed); 
-        characterRec.y = walkingY(characterRec.y, speed);
+        characterRec.x = walkingX(characterRec.x, movementClass.speed); 
+        //Karaktärens X-position är lika med funktionen walkingX med parametrarna characterRec.X och variabeln Speed
 
+        characterRec.y = walkingY(characterRec.y, movementClass.speed);
+        //Karaktärens Y-position är lika med funktionen walkingY med parametrarna characterRec.Y och variabeln Speed
+
+        //Taget från Micke \/
         Vector2 playerPos = new Vector2(characterRec.x, characterRec.y);
         Vector2 fiendePos = new Vector2(enemyRec.enemyRec.x, enemyRec.enemyRec.y);
         Vector2 diff = playerPos - fiendePos;
@@ -133,9 +159,10 @@ while (Raylib.WindowShouldClose() == false)
         movementClass.enemyMovement = fiendeDirection * movementClass.enemySpeed;
         enemyRec.enemyRec.x += movementClass.enemyMovement.X;
         enemyRec.enemyRec.y += movementClass.enemyMovement.Y;
-            
+        //Taget från Micke /\
+
         VariableClass.dmgTimer--;   //Dmgtimer minskar med ett varje frame
-        if (VariableClass.dmgTimer == 0){ //Om Dmgtimer är lika med 0 så ska dmgtimer vara lika med 60
+        if (VariableClass.dmgTimer == 0){ //Om Dmgtimer är lika med 0, gör dmgtimer till 60
             VariableClass.dmgTimer = 60;
         }
 
@@ -152,7 +179,7 @@ while (Raylib.WindowShouldClose() == false)
             VariableClass.currentScene = "gameover";
             enemyRec.enemyRec.x = 1024;
             enemyRec.enemyRec.y = 1024;
-            speed= 4.5f;
+            movementClass.speed= 4.5f;
             timer.Stop();
         }
 
@@ -174,32 +201,52 @@ while (Raylib.WindowShouldClose() == false)
             VariableClass.currentScene="winScene";
             alphavariable = 0;
         }
+        //Om variabeln runda är lika med 6
+        //Gör currentScene till "winScene" och alphavariabel till 0;
     }
 
     else if (VariableClass.currentScene == "start")
     {   
         if (Raylib.CheckCollisionRecs(characterRec, rectangleClass.playGame))
         {
+            //Om karaktär rektangeln och playGame rektangeln kolliderar.
+            //Och om ENTER-knappen släpps. 
+            //Variabeln beginGame är lika med true
+            //Karaktärens y-position är lika med 500;
+
             if (Raylib.IsKeyReleased(KeyboardKey.KEY_ENTER))
             {
                 VariableClass.beginGame=true;
                 characterRec.y = 500;
             }
 
+            
+
             if (VariableClass.beginGame == true && alphavariable<255)
             {
+                //Om variabeln beginGame är lika med true och variabeln alphavariable är mindre än 255.
+                //Öka alphavariable med 1 varje frame.
+                //alpha.a (färgen alpha's opacity) är är lika med alphavariable
+
                 alphavariable++;
                 alpha.a = (byte)alphavariable;
             }
             
             if (alphavariable==255)
             {
+                //Om alphavariable är lika med 255
+                //Gör currentScene till "game"
+                //Resetta karaktärpositionen
                 VariableClass.currentScene = "game";
                 resetCharPos();
             }
         }
             else if (Raylib.CheckCollisionRecs(characterRec, rectangleClass.difficulty))
             {
+                //Om karaktär rektangeln kolliderar med difficulty rektangeln
+                //Och om ENTER-knappen trycks
+                //Gör currentScene till "chooseDiff" (choose difficulty)
+                
                 if (Raylib.IsKeyPressed(KeyboardKey.KEY_ENTER))
                 {
                 VariableClass.currentScene = "chooseDiff";
@@ -208,11 +255,16 @@ while (Raylib.WindowShouldClose() == false)
 
             else if(Raylib.CheckCollisionRecs(characterRec, rectangleClass.exitGame))
             {
+                //Annars om karaktär rektangeln kolliderar med exitgame rektangeln
+                //Och om ENTER-knappen är nedtryckt. 
+                //Bryt spelet.
+
                 if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER)) 
                 {
                 break;
                 }
             }
+        //Karaktärens Y-position är detsamma som funktionen skipY med parametern characterRec.y
         characterRec.y = skipY(characterRec.y);
         characterRec.x = 20;
     }
@@ -228,7 +280,8 @@ while (Raylib.WindowShouldClose() == false)
             }
         }
         
-        //om nuvarande scenen är chooseDiff och D-knappen trycks så ökar diffInt med 1.
+        //om nuvarande scenen är chooseDiff 
+        //Om D-knappen trycks, öka variabeln diffInt med 1
         //om diffInt är större än 4 så blir den lika med 2
 
         else if (Raylib.IsKeyPressed(KeyboardKey.KEY_A))
@@ -239,7 +292,7 @@ while (Raylib.WindowShouldClose() == false)
                 VariableClass.diffInt=4;
             }
         }
-        
+        //Om A-knappen trycks, minska variabeln diffInt med 1.
         //om diffInt är mindre än 2 så blir den lika med 4
 
         switch (VariableClass.diffInt)
@@ -269,7 +322,7 @@ while (Raylib.WindowShouldClose() == false)
         {
             VariableClass.currentScene = "start";
         }
-        //Om ENTER-knappen trycks så blir currentScene start scenen
+        //Om ENTER-knappen trycks gör currentScene till "start"
     }
 
     else if (VariableClass.currentScene == "upgrade")
@@ -281,11 +334,18 @@ while (Raylib.WindowShouldClose() == false)
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
             {
-                speed = speed + 0.2f;
+                movementClass.speed = movementClass.speed + 0.2f;
                 VariableClass.gold = VariableClass.gold - 10*VariableClass.plusSpeedAmount;
                 VariableClass.plusSpeedAmount++;
             }
         }
+
+        //Upgrade1
+        //Om karaktärens position kolliderar med upgrade1 rektangeln, och guld är större eller lika med 10 multiplicerat med plusSpeedAmount
+        //Och om SPACE-knappen trycks
+        //Öka variabeln Speed med 0.2
+        //Minska variabeln Gold med Gold - 10 multiplicerat med plusSpeedAmount
+        //Öka plusSpeedAmount med 1.
 
         if (Raylib.CheckCollisionRecs(characterRec, rectangleClass.upgrade2) && VariableClass.gold >= 5*VariableClass.round && VariableClass.hp<100)
         {
@@ -296,6 +356,12 @@ while (Raylib.WindowShouldClose() == false)
             }
         }
 
+        //Upgrade2
+        //Om karaktärens position kolliderar med upgrade2 rektangeln, och guld är större eller lika med 5 multiplicerat med variabeln round och variabeln hp är mindre än 100
+        //Och om SPACE-knappen trycks
+        //Gör variabeln hp till 100
+        //Minska variabeln Gold med Gold - 5 multiplicerat med round
+        
         if (Raylib.CheckCollisionRecs(characterRec, rectangleClass.upgrade3) && VariableClass.gold >= 10*VariableClass.plusGoldAmount)
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
@@ -306,6 +372,13 @@ while (Raylib.WindowShouldClose() == false)
             }
         }
 
+        //Upgrade3
+        //Om karaktärens position kolliderar med upgrade3 rektangeln, och guld är större eller lika med 10 multiplicerat med plusGoldAmount
+        //Och om SPACE-knappen trycks
+        //Öka variabeln extraGold med 1
+        //Minska variabeln Gold med Gold - 10 multiplicerat med plusGoldAmount
+        //Öka plusGoldAmount med 1.
+
         if (Raylib.CheckCollisionRecs(characterRec, rectangleClass.nextround))
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE))
@@ -314,10 +387,16 @@ while (Raylib.WindowShouldClose() == false)
                 resetCharPos();
             }
         }
+
+        //NextRound
+        //Om karaktärens position kolliderar med nextround rektangeln.
+        //Och om SPACE-knappen trycks.
+        //Gör currentScene till "game" och resetta karaktärens position.
     }
 
-    else if (VariableClass.currentScene == "winScene")
+    else if (VariableClass.currentScene == "winScene") //Annars om du når runda 5 och vinner, och du trycker ENTER
     {
+        //Resetta karaktär-positionen, men gör y-positionen till 500. Gör currentScene till "Start" och resetta alla variabler.
         if (Raylib.IsKeyReleased(KeyboardKey.KEY_ENTER)) 
         {
             resetCharPos();
@@ -327,7 +406,8 @@ while (Raylib.WindowShouldClose() == false)
         }
     }
 
-    else
+    else //Annars om du dör, och du trycker ENTER
+    //Resetta karaktär-positionen, men gör y-positionen till 500. Gör currentScene till "Start" och resetta alla variabler.
     {
         if (Raylib.IsKeyReleased(KeyboardKey.KEY_ENTER)) 
         {
@@ -338,7 +418,7 @@ while (Raylib.WindowShouldClose() == false)
         }
     }
 
-    //=============================GRAFIK===============================
+    //=============================GRAFIK====================================
 
     Raylib.BeginDrawing();
     Raylib.ClearBackground(Color.WHITE);
@@ -350,21 +430,23 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawTexture(t.backgroundTextures[2], 0, 0, Color.WHITE); //Spelbakgrund
         Raylib.DrawTexture(t.otherTextures[0], (int)finish.x, (int)finish.y, Color.WHITE);
 
-        
-        foreach (var enemy in enemies)
+        foreach (var enemy in enemies) //För varje fiende i listan enemyclass.
         {
+            //Rita en fiende med fiendetexturen och dess position. 
             Raylib.DrawTexture(t.charTextures[VariableClass.diffInt], (int)enemyRec.enemyRec.x, (int)enemyRec.enemyRec.y, Color.WHITE); //Fiende texturen 
         }
         
-        methodClass.runningLogic(); //Funktion för hur snabbt rektangeln ska röra på sig
-
-        VariableClass.coinTimer--;
+        methodClass.runningLogic(); //Funktion för hur snabbt Source rektangeln ska röra på sig.
+        VariableClass.coinTimer--;//Cointimer som minskar med 1 varje frame. den är 120 från början vilket innebär att det tar 2 sekunder att nå 0.
+        Rectangle sourceRec = new Rectangle(80*VariableClass.frame, 0, 80, 80); //Source rektangel för karaktäranimation under rörelse
+        Rectangle sourceRec1 = new Rectangle(80*VariableClass.frame, 0, -80, 80); //Source rektangel för karaktär under rörelse i motsatt riktning
+        Rectangle coinRecAnim = new Rectangle(20*VariableClass.frame, 0, 20, 32); //Source rektangel för guldcoinens spritesheet
 
         if (VariableClass.coinTimer < 0)
         {
             Rectangle coinRec = new Rectangle(randomClass.pickupPosX, randomClass.pickupPosY, 32, 20);
             Vector2 coinposition = new(randomClass.pickupPosX, randomClass.pickupPosY);
-            Raylib.DrawTextureRec(t.otherTextures[4], rectangleClass.coinRecAnim, coinposition, Color.WHITE);
+            Raylib.DrawTextureRec(t.otherTextures[4], coinRecAnim, coinposition, Color.WHITE);
 
             if (Raylib.CheckCollisionRecs(characterRec, coinRec)){
                 VariableClass.gold++;
@@ -372,25 +454,28 @@ while (Raylib.WindowShouldClose() == false)
                 randomClass.pickupPosX = randomClass.rnd.Next(0, 1030);
                 randomClass.pickupPosY = randomClass.rnd.Next(0, 1030);
             }
-            //Om karaktären och guldcoinen kolliderar så får man en guld och cointimern resetar samt så förändras coin positionen till en random position mellan 0<x<1031 och 0<y<1031
+            //Om karaktären och guldcoinen kolliderar så får man en guld och cointimern resetar 
+            //samt så förändras coin positionen till en random position mellan 0<x<1031 och 0<y<1031
         }
+
+        
 
         //Nedan är själva animationen som använder en sourcerec för att rita ut specifika positioner på ett spritesheet
         if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
         {
-            Raylib.DrawTextureRec(r.runningTexture, rectangleClass.sourceRec, characterPos, Color.WHITE);
+            Raylib.DrawTextureRec(r.runningTexture, sourceRec, characterPos, Color.WHITE);
         }
         else if (Raylib.IsKeyDown(KeyboardKey.KEY_A))
         {
-            Raylib.DrawTextureRec(r.runningTexture, rectangleClass.sourceRec1, characterPos, Color.WHITE);
+            Raylib.DrawTextureRec(r.runningTexture, sourceRec1, characterPos, Color.WHITE);
         }
         else if (Raylib.IsKeyDown(KeyboardKey.KEY_W))
         {
-            Raylib.DrawTextureRec(r.runningTexture2, rectangleClass.sourceRec, characterPos, Color.WHITE);
+            Raylib.DrawTextureRec(r.runningTexture2, sourceRec, characterPos, Color.WHITE);
         }
         else if (Raylib.IsKeyDown(KeyboardKey.KEY_S))
         {
-            Raylib.DrawTextureRec(r.runningTexture3, rectangleClass.sourceRec, characterPos, Color.WHITE);
+            Raylib.DrawTextureRec(r.runningTexture3, sourceRec, characterPos, Color.WHITE);
         }
         
         else //Annars om inte ovanstående saker stämmer så ritas idle karaktär texturen
@@ -406,6 +491,9 @@ while (Raylib.WindowShouldClose() == false)
         {   
            Raylib.DrawTexture(t.charTextures[0], (int)characterRec.x, (int)characterRec.y,Color.RED);
         }
+        //Om karaktärrektangeln och fienderektangeln kolliderar samt att dmgtimer är detsamma som 1
+        //Rita ut karaktärtexturen med röd färg istället.
+
         Raylib.EndMode2D(); //Tillåter texterna nedan att ha en fast positions på skärmen.
 
         Raylib.DrawTexture(t.otherTextures[2], 760, 900, Color.WHITE);
@@ -422,6 +510,10 @@ while (Raylib.WindowShouldClose() == false)
             alpha.a = (byte)alphavariable;
             Raylib.DrawRectangle(0, 0, 1080, 1080, alpha);
         }
+        //Om alphavariable är större än 0
+        //Minska alphavariable med 1 varje frame. 60 frames per sekund.
+        //Färgen Alphas opacity är detsamma som alphavariabeln i byte-form.
+        //Rita ut en rektangel med färgen "Alpha" och storleken av skärmen
     }
 
     else if (VariableClass.currentScene == "chooseDiff")
@@ -458,7 +550,7 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawText("4. Play next round", 540, 300, 20, Color.WHITE);
         Raylib.DrawText($"Gold: {VariableClass.gold}", 150, 80, 30, Color.WHITE);
         Raylib.DrawText($"Gold/Sec: {VariableClass.extragold}", 150, 160, 30, Color.WHITE);
-        Raylib.DrawText($"Speed: {speed}", 150, 240, 30, Color.WHITE);
+        Raylib.DrawText($"Speed: {movementClass.speed}", 150, 240, 30, Color.WHITE);
         Raylib.DrawText($"Health: {VariableClass.hp}", 150, 320, 30, Color.WHITE);
     }   
     else if (VariableClass.currentScene == "start")

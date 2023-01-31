@@ -13,14 +13,15 @@ public class methodClass{
     {
     VariableClass.timer1 += 0.06f; //Timer ökar med 0.06 varje frame. 60 gånger per sekund
         
-    if (VariableClass.timer1 > 0.4f) //Om timer är större än 0.4. Timer är 0 och frame är lika med +1. Frame ökar tills maxframes uppnås, alltså 8.
+    if (VariableClass.timer1 > 0.4f) //Om timer är större än 0.4. Timer är 0 och frame är lika med +1. 
     {
     VariableClass.timer1 = 0.0f;
-    VariableClass.frame +=1;
+    VariableClass.frame +=1; //En ny frame innebär en ny "plats" på spritesheetet. Varje frame har ett värde på 80 pixlar.
         }
-    VariableClass.frame = VariableClass.frame % VariableClass.maxFrames;
+    VariableClass.frame = VariableClass.frame % VariableClass.maxFrames; //Frame ökar tills maxframes uppnås, alltså 8.
     }
 
+    //Resettar alla variabler om du exempelvis dör eller vinner.
     public static void resetVariables(){
     VariableClass.extragold = 0; 
     VariableClass.gold = 0; 
